@@ -23,6 +23,12 @@ module Rosalind
       puts lexv(alphabet, n)
     end
   end
+
+  class PROT < Base
+    def run
+      puts RNA.new(input).to_protein_string
+    end
+  end
 end
 
 if __FILE__ == $0

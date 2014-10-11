@@ -51,3 +51,10 @@ CCTGCGGAAGATCGGCACTAGAATAGCCAGAACCGTTTCTCTGAGGCTTCCGGCCTTCCCTCCCACTAATAATTCTGAGG
     assert_equal 'Rosalind_0808', fasta.dna.max_by {|_,v| v.gc_content }[0]
   end
 end
+
+class TestRNA < Minitest::Test
+  def test_to_protein_string
+    rna = RNA.new('AUGGCCAUGGCGCCCAGAACUGAGAUCAAUAGUACCCGUAUUAACGGGUGA')
+    assert_equal 'MAMAPRTEINSTRING', rna.to_protein_string
+  end
+end

@@ -28,6 +28,10 @@ class DNA
   def ==(dna)
     raw == dna.raw
   end
+
+  def hamming_distance(dna)
+    raw.chars.zip(dna.raw.chars).count {|a,b| a != b }
+  end
 end
 
 class FASTA

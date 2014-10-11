@@ -22,6 +22,12 @@ class TestDNA < Minitest::Test
     dna = DNA.new('CCACCCTCGTGGTATGGCTAGGCATTCAGGAACCGGAGAACGCTTCAGACCAGCCCGGACTGGGAACCTGCGGGCAGTAGGTGGAAT')
     assert_in_delta 60.91954, dna.gc_content, 0.001
   end
+
+  def hamming_distance
+    a = DNA.new('GAGCCTACTAACGGGAT')
+    b = DNA.new('CATCGTAATGACGGCCT')
+    assert_equal 7, a.hamming_distance(b)
+  end
 end
 
 class TestFASTA < Minitest::Test

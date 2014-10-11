@@ -18,4 +18,18 @@ class TestMisc < Minitest::Test
     assert_equal [1, 2], MortalRabbits[[5, 3]]
     assert_equal [2, 2], MortalRabbits[[6, 3]]
   end
+
+  def test_permutations
+    assert_equal <<-EOF.split(/\s+/), permutations(%w[T A G C], 2)
+TT TA TG TC AT AA AG AC GT GA GG GC CT CA CG CC
+    EOF
+  end
+
+  def test_lexv
+    assert_equal <<-EOF.split(/\s+/), lexv(%w[D N A], 3)
+D DD DDD DDN DDA DN DND DNN DNA DA DAD DAN DAA
+N ND NDD NDN NDA NN NND NNN NNA NA NAD NAN NAA
+A AD ADD ADN ADA AN AND ANN ANA AA AAD AAN AAA
+    EOF
+  end
 end

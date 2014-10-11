@@ -11,11 +11,11 @@ class TestMisc < Minitest::Test
   end
 
   def test_mortal_rabbits
-    assert_equal 1, MortalRabbits[[1, 3]]
-    assert_equal 1, MortalRabbits[[2, 3]]
-    assert_equal 2, MortalRabbits[[3, 3]]
-    assert_equal 2, MortalRabbits[[4, 3]]
-    assert_equal 3, MortalRabbits[[5, 3]]
-    assert_equal 4, MortalRabbits[[6, 3]]
+    assert_equal [1, 0], MortalRabbits[[1, 3]]
+    assert_equal [0, 1], MortalRabbits[[2, 3]]
+    assert_equal [1, 1], MortalRabbits[[3, 3]]
+    assert_equal [1, 1], MortalRabbits[[4, 3]]
+    assert_equal [1, 2], MortalRabbits[[5, 3]]
+    assert_equal [2, 2], MortalRabbits[[6, 3]]
   end
 end

@@ -9,13 +9,12 @@ end
 
 MortalRabbits = Hash.new do |h,(n,m)|
   h[[n,m]] = case n
-             when 0
-               1
-             when 1..2
-               1
-             when 3
-               2
+             when -m..0
+               [0, 0]
+             when 1
+               [1, 0]
              else
-               h[[n-1,m]] + h[[n-2,m]] - h[[n-4,m]]
+               [ h[[n-1,m]][1], # new rabbits
+                 h[[n-1,m]][0] + h[[n-1,m]][1] - h[[n-m,m]][0] ]
              end
 end

@@ -12,4 +12,9 @@ class TestDNA < Minitest::Test
     dna = DNA.new('GATGGAACTTGACTACGTAAATT')
     assert_equal 'GAUGGAACUUGACUACGUAAAUU', dna.to_rna
   end
+
+  def test_reverse_complement
+    dna = DNA.new('AAAACCCGGT')
+    assert_equal 'ACCGGGTTTT', dna.reverse_complement
+  end
 end

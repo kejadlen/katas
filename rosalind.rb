@@ -2,7 +2,7 @@ class DNA
   attr_reader :raw
 
   def initialize(raw)
-    @raw = raw
+    @raw = raw.gsub(/[^acgt]/i, '')
   end
 
   def nucleotide_count
@@ -14,6 +14,10 @@ class DNA
 
   def to_rna
     raw.tr(?T, ?U)
+  end
+
+  def reverse_complement
+    raw.reverse.tr('ATCG', 'TAGC')
   end
 end
 

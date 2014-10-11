@@ -29,9 +29,22 @@ module Rosalind
       puts RNA.new(input).to_protein_string
     end
   end
+
+  class SUBS < Base
+    def run
+      s, t = input.split(/\s+/)
+      indices = [ s.index(t) ]
+
+      indices << s.index(t, indices.last+1) until indices.last.nil?
+      indices.pop
+      puts indices.map {|i| i+1 }.join(' ')
+    end
+  end
 end
 
 if __FILE__ == $0
+  require 'pry' and binding.pry and exit if ARGV.empty?
+
   file = ARGV.shift
   problem = file[/rosalind_(\w+).txt/, 1]
   input = File.read(file)

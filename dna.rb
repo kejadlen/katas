@@ -19,4 +19,21 @@ class DNA
   def reverse_complement
     raw.reverse.tr('ATCG', 'TAGC')
   end
+
+  def gc_content
+    gc = raw.chars.count {|nucleotide| nucleotide =~ /[GC]/i }
+    100.0 * gc / raw.length
+  end
+
+  def ==(dna)
+    raw == dna.raw
+  end
+end
+
+class FASTA
+  attr_reader :dna
+
+  def initialize(raw)
+    @dna = Hash[raw.scan(/>([^\n]+)\n([^>]+)\n/).map {|k,v| [k, DNA.new(v)] }]
+  end
 end

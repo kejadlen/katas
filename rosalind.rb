@@ -1,12 +1,20 @@
-def count_dna_nucleotides(dna)
-  count = dna.chars.each.with_object(Hash.new(0)) do |nucleotide, count|
-    count[nucleotide] += 1
-  end
-  count.values_at(*%w[A C G T])
-end
+class DNA
+  attr_reader :raw
 
-def transcribe_dna_to_rna(dna)
-  dna.tr(?T, ?U)
+  def initialize(raw)
+    @raw = raw
+  end
+
+  def nucleotide_count
+    count = raw.chars.each.with_object(Hash.new(0)) do |nucleotide, count|
+      count[nucleotide] += 1
+    end
+    count.values_at(*%w[A C G T])
+  end
+
+  def to_rna
+    raw.tr(?T, ?U)
+  end
 end
 
 if __FILE__ == $0

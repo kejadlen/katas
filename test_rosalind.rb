@@ -2,15 +2,14 @@ require 'minitest/autorun'
 
 require_relative 'rosalind'
 
-class Test < Minitest::Test
-  def test_count_dna_nucleotides
-    dna = 'AGCTTTTCATTCTGACTGCAACGGGCAATATGTCTCTGTGTGGATTAAAAAAAGAGTGTCTGATAGCAGC'
-    assert_equal [20, 12, 17, 21], count_dna_nucleotides(dna)
+class TestDNA < Minitest::Test
+  def test_nucleotide_count
+    dna = DNA.new('AGCTTTTCATTCTGACTGCAACGGGCAATATGTCTCTGTGTGGATTAAAAAAAGAGTGTCTGATAGCAGC')
+    assert_equal [20, 12, 17, 21], dna.nucleotide_count
   end
 
-  def test_transcribe_dna_to_rna
-    dna = 'GATGGAACTTGACTACGTAAATT'
-    rna = 'GAUGGAACUUGACUACGUAAAUU'
-    assert_equal rna, transcribe_dna_to_rna(dna)
+  def test_to_rna
+    dna = DNA.new('GATGGAACTTGACTACGTAAATT')
+    assert_equal 'GAUGGAACUUGACUACGUAAAUU', dna.to_rna
   end
 end

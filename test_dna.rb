@@ -50,6 +50,50 @@ CCTGCGGAAGATCGGCACTAGAATAGCCAGAACCGTTTCTCTGAGGCTTCCGGCCTTCCCTCCCACTAATAATTCTGAGG
     DNA
     assert_equal 'Rosalind_0808', fasta.dna.max_by {|_,v| v.gc_content }[0]
   end
+
+  def test_profile_matrix
+    fasta = FASTA.new(<<-EOF)
+>Rosalind_1
+ATCCAGCT
+>Rosalind_2
+GGGCAACT
+>Rosalind_3
+ATGGATCT
+>Rosalind_4
+AAGCAACC
+>Rosalind_5
+TTGGAACT
+>Rosalind_6
+ATGCCATT
+>Rosalind_7
+ATGGCACT
+    EOF
+    profile_matrix = fasta.profile_matrix
+
+    assert_equal({ ?A => 5, ?G => 1, ?T => 1 }, profile_matrix[0])
+    assert_equal({ ?C => 1, ?T => 6 }, profile_matrix[7])
+  end
+
+  def test_consensus
+    fasta = FASTA.new(<<-EOF)
+>Rosalind_1
+ATCCAGCT
+>Rosalind_2
+GGGCAACT
+>Rosalind_3
+ATGGATCT
+>Rosalind_4
+AAGCAACC
+>Rosalind_5
+TTGGAACT
+>Rosalind_6
+ATGCCATT
+>Rosalind_7
+ATGGCACT
+    EOF
+
+    assert_equal 'ATGCAACT', fasta.consensus
+  end
 end
 
 class TestRNA < Minitest::Test

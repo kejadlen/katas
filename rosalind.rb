@@ -40,6 +40,19 @@ module Rosalind
       puts indices.map {|i| i+1 }.join(' ')
     end
   end
+
+  class CONS < Base
+    def run
+      fasta = FASTA.new(input)
+
+      puts fasta.consensus
+
+      matrix = fasta.profile_matrix.to_a.sort.map(&:last)
+      %w[ A C G T ].each do |nucleotide|
+        puts "#{nucleotide}: #{matrix.map {|m| m[nucleotide]}.join(' ')}"
+      end
+    end
+  end
 end
 
 if __FILE__ == $0

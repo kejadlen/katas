@@ -81,9 +81,9 @@ AAATCCC
 GGGTGGG
     EOF
 
-    assert_equal [ %w[Rosalind_0498 Rosalind_2391],
-                   %w[Rosalind_0498 Rosalind_0442],
-                   %w[ Rosalind_2391 Rosalind_2323] ],
+    assert_equal [ %w[ Rosalind_0498 Rosalind_2391 ],
+                   %w[ Rosalind_0498 Rosalind_0442 ],
+                   %w[ Rosalind_2391 Rosalind_2323 ] ],
                  fasta.adjacency_list
   end
 end

@@ -24,14 +24,11 @@ class FASTA
   end
 
   def adjacency_list(n=3)
-    array = dna.to_a
     out = []
-    until array.empty?
-      id_a, dna_a = array.shift
-      neighbors = array.select do |_,dna_b|
-        dna_a.suffix == dna_b.prefix || dna_a.prefix == dna_b.suffix
+    dna.each do |id_a,dna_a|
+      dna.reject {|id_b,_| id_a == id_b }.each do |id_b,dna_b|
+        out << [id_a, id_b] if dna_a.suffix(n) == dna_b.prefix(n)
       end
-      out.concat(neighbors.map {|id_b,_| [ id_a, id_b ] })
     end
     out
   end

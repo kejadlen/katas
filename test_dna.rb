@@ -28,6 +28,16 @@ class TestDNA < Minitest::Test
     b = DNA.new('CATCGTAATGACGGCCT')
     assert_equal 7, a.hamming_distance(b)
   end
+
+  def test_suffix
+    assert_equal 'AAA', DNA.new('AAATAAA').suffix
+    assert_equal 'TTT', DNA.new('AAATTTT').suffix
+  end
+
+  def test_prefix
+    assert_equal 'AAA', DNA.new('AAATAAA').prefix
+    assert_equal 'AAA', DNA.new('AAATTTT').prefix
+  end
 end
 
 class TestRNA < Minitest::Test

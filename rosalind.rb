@@ -1,4 +1,5 @@
 require_relative 'dna'
+require_relative 'fasta'
 require_relative 'misc'
 
 module Rosalind
@@ -51,6 +52,13 @@ module Rosalind
       %w[ A C G T ].each do |nucleotide|
         puts "#{nucleotide}: #{matrix.map {|m| m[nucleotide]}.join(' ')}"
       end
+    end
+  end
+
+  class GRPH < Base
+    def run
+      fasta = FASTA.new(input)
+      puts fasta.adjacency_list.map {|neighbors| neighbors.join(' ') }.join("\n")
     end
   end
 end

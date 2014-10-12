@@ -10,7 +10,7 @@ class FASTA
   def profile_matrix
     matrix = Hash.new {|h,k| h[k] = Hash.new(0) }
     dna.values.each do |dna|
-      dna.raw.chars.each.with_index do |nucleotide,i|
+      dna.chars.each.with_index do |nucleotide,i|
         matrix[i][nucleotide] += 1
       end
     end

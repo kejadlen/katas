@@ -22,5 +22,17 @@ class FASTA
     length = matrix.keys.max
     (0..length).map {|i| matrix[i].to_a.max_by {|_,v| v }[0] }.join
   end
-end
 
+  def adjacency_list(n=3)
+    array = dna.to_a
+    out = []
+    until array.empty?
+      id_a, dna_a = array.shift
+      neighbors = array.select do |_,dna_b|
+        dna_a.suffix == dna_b.prefix || dna_a.prefix == dna_b.suffix
+      end
+      out.concat(neighbors.map {|id_b,_| [ id_a, id_b ] })
+    end
+    out
+  end
+end

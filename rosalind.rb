@@ -61,6 +61,13 @@ module Rosalind
       puts fasta.adjacency_list.map {|neighbors| neighbors.join(' ') }.join("\n")
     end
   end
+
+  class LCSM < Base
+    def run
+      fasta = FASTA.new(input)
+      puts fasta.longest_common_substring
+    end
+  end
 end
 
 if __FILE__ == $0

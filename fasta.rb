@@ -32,4 +32,15 @@ class FASTA
     end
     out
   end
+
+  def longest_common_substring
+    a_dna = dna.values.max_by(&:length)
+    a_dna.length.downto(1).each do |length|
+      (0..(a_dna.length - length)).each do |i|
+        substring = a_dna[i, length]
+
+        return substring if dna.values.all? {|dna| dna.include?(substring) }
+      end
+    end
+  end
 end

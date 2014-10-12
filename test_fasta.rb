@@ -86,4 +86,17 @@ GGGTGGG
                    %w[ Rosalind_2391 Rosalind_2323 ] ],
                  fasta.adjacency_list
   end
+
+  def test_longest_common_substring
+    fasta = FASTA.new(<<-EOF)
+>Rosalind_1
+GATTACA
+>Rosalind_2
+TAGACCA
+>Rosalind_3
+ATACA
+    EOF
+
+    assert_equal 'TA', fasta.longest_common_substring
+  end
 end

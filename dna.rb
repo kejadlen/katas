@@ -40,6 +40,18 @@ class DNA
   def prefix(n=3)
     raw[0..(n-1)]
   end
+
+  def length
+    raw.length
+  end
+
+  def [](*args)
+    raw[*args]
+  end
+
+  def include?(str)
+    raw.include?(str)
+  end
 end
 
 class RNA

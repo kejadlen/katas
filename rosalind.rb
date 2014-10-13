@@ -82,6 +82,12 @@ module Rosalind
       end
     end
   end
+
+  class MRNA < Base
+    def run
+      puts Protein.new(input).rna_count
+    end
+  end
 end
 
 if __FILE__ == $0

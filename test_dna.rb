@@ -62,4 +62,9 @@ CLTIDFDSLDDQQDPSFTIRERNSMAQKRIKLSELPLYLNQKAHEDFQRQCQK
 
     assert_equal [ 85, 118, 142, 306, 395 ], protein.motifs('N{P}[ST]{P}')
   end
+
+  def test_rna_count
+    protein = Protein.new('MA')
+    assert_equal 12, protein.rna_count
+  end
 end

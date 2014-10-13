@@ -41,7 +41,7 @@ class DNA < DelegateClass(String)
 end
 
 class RNA
-  CODON_TABLE = Hash[*<<-EOF.split(/\s+/)]
+  CODONS = Hash[*<<-EOF.split(/\s+/)]
 UUU F      CUU L      AUU I      GUU V
 UUC F      CUC L      AUC I      GUC V
 UUA L      CUA L      AUA I      GUA V
@@ -69,7 +69,7 @@ UGG W      CGG R      AGG R      GGG G
   def to_protein_string
     Protein.new(
       raw.chars.each_slice(3)
-        .map {|slice| CODON_TABLE[slice.join] }
+        .map {|slice| CODONS[slice.join] }
         .take_while {|protein| protein != 'Stop' }
         .join
     )
@@ -77,6 +77,8 @@ UGG W      CGG R      AGG R      GGG G
 end
 
 class Protein < DelegateClass(String)
+  RNA_COUNT = RNA::CODONS.each.with_object(Hash.new(0)) {|(_,v),h| h[v] += 1 }
+
   def initialize(raw)
     super(raw.gsub(/\s+/, ''))
   end
@@ -93,5 +95,14 @@ class Protein < DelegateClass(String)
 
   def motif_to_regex(motif)
     Regexp.new(motif.gsub(/\{([^}])\}/, '[^\1]'))
+  end
+
+  def rna_count
+    out = 1
+    (chars + %w[ Stop ]).each do |char|
+      out *= RNA_COUNT[char]
+      out %= 1_000_000
+    end
+    out
   end
 end

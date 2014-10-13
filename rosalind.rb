@@ -68,6 +68,20 @@ module Rosalind
       puts fasta.longest_common_substring
     end
   end
+
+  class MPRT < Base
+    def run
+      input.split("\n").each do |id|
+        fasta = FASTA.from_uniprot(id)
+
+        motifs = Protein.new(fasta[0]).motifs('N{P}[ST]{P}')
+        next if motifs.empty?
+
+        puts id
+        puts motifs.join(' ')
+      end
+    end
+  end
 end
 
 if __FILE__ == $0

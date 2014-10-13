@@ -1,3 +1,5 @@
+require 'delegate'
+
 class DNA < DelegateClass(String)
   attr_reader :raw
 
@@ -65,9 +67,31 @@ UGG W      CGG R      AGG R      GGG G
   end
 
   def to_protein_string
-    raw.chars.each_slice(3)
-      .map {|slice| CODON_TABLE[slice.join] }
-      .take_while {|protein| protein != 'Stop' }
-      .join
+    Protein.new(
+      raw.chars.each_slice(3)
+        .map {|slice| CODON_TABLE[slice.join] }
+        .take_while {|protein| protein != 'Stop' }
+        .join
+    )
+  end
+end
+
+class Protein < DelegateClass(String)
+  def initialize(raw)
+    super(raw.gsub(/\s+/, ''))
+  end
+
+  def motifs(motif)
+    regex = motif_to_regex(motif)
+    out = [ index(regex) ]
+    until out.last.nil?
+      out << index(regex, out.last + 1)
+    end
+    out.pop
+    out.map {|i| i+1 }
+  end
+
+  def motif_to_regex(motif)
+    Regexp.new(motif.gsub(/\{([^}])\}/, '[^\1]'))
   end
 end

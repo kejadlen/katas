@@ -1,17 +1,33 @@
-require_relative 'dna'
+require 'delegate'
+require 'open-uri'
 
-class FASTA
-  attr_reader :dna
+class Sequence < DelegateClass(String)
+  attr_reader :id
 
-  def initialize(raw)
-    @dna = Hash[raw.scan(/>([^\n]+)\n([^>]+)\n?/).map {|k,v| [k, DNA.new(v)] }]
+  def initialize(id, data)
+    @id = id
+
+    super(data)
+  end
+end
+
+class FASTA < DelegateClass(Array)
+  UNIPROT = 'http://www.uniprot.org/uniprot/%s.fasta'
+
+  def self.from_uniprot(id)
+    FASTA.new(open(UNIPROT % id).read)
+  end
+
+  def initialize(input)
+    super(input.scan(/>([^\n]+)\n([^>]+)\n?/)
+               .map {|k,v| Sequence.new(k, v.gsub(/\s+/, '')) })
   end
 
   def profile_matrix
     matrix = Hash.new {|h,k| h[k] = Hash.new(0) }
-    dna.values.each do |dna|
-      dna.chars.each.with_index do |nucleotide,i|
-        matrix[i][nucleotide] += 1
+    each do |sequence|
+      sequence.chars.each.with_index do |char,i|
+        matrix[i][char] += 1
       end
     end
     matrix
@@ -23,23 +39,23 @@ class FASTA
     (0..length).map {|i| matrix[i].to_a.max_by {|_,v| v }[0] }.join
   end
 
-  def adjacency_list(n=3)
+  def adjacency_list
     out = []
-    dna.each do |id_a,dna_a|
-      dna.reject {|id_b,_| id_a == id_b }.each do |id_b,dna_b|
-        out << [id_a, id_b] if dna_a.suffix(n) == dna_b.prefix(n)
+    each do |seq_a|
+      reject {|seq_b| seq_a.id == seq_b.id }.each do |seq_b|
+        out << [ seq_a.id, seq_b.id ] if yield seq_a, seq_b
       end
     end
     out
   end
 
   def longest_common_substring
-    a_dna = dna.values.max_by(&:length)
-    a_dna.length.downto(1).each do |length|
-      (0..(a_dna.length - length)).each do |i|
-        substring = a_dna[i, length]
+    seq = max_by(&:length)
+    seq.length.downto(1).each do |length|
+      (0..(seq.length - length)).each do |i|
+        substring = seq[i, length]
 
-        return substring if dna.values.all? {|dna| dna.include?(substring) }
+        return substring if all? {|seq| seq.include?(substring) }
       end
     end
   end

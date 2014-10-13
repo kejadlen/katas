@@ -1,5 +1,6 @@
 require 'minitest/autorun'
 
+require_relative 'dna'
 require_relative 'fasta'
 
 class TestFASTA < Minitest::Test
@@ -16,11 +17,12 @@ CCACCCTCGTGGTATGGCTAGGCATTCAGGAACCGGAGAACGCTTCAGACCAGCCCGGAC
 TGGGAACCTGCGGGCAGTAGGTGGAAT
     EOF
 
-    assert_equal %w[Rosalind_6404 Rosalind_5959 Rosalind_0808], fasta.dna.keys
-    assert_equal DNA.new(<<-DNA), fasta.dna['Rosalind_6404']
+    assert_equal %w[Rosalind_6404 Rosalind_5959 Rosalind_0808], fasta.map(&:id)
+    assert_equal <<-DNA.strip, fasta.find {|seq| seq.id == 'Rosalind_6404' }
 CCTGCGGAAGATCGGCACTAGAATAGCCAGAACCGTTTCTCTGAGGCTTCCGGCCTTCCCTCCCACTAATAATTCTGAGG
     DNA
-    assert_equal 'Rosalind_0808', fasta.dna.max_by {|_,v| v.gc_content }[0]
+    assert_equal 'Rosalind_0808',
+                 fasta.max_by {|seq| DNA.new(seq).gc_content }.id
   end
 
   def test_profile_matrix
@@ -84,7 +86,7 @@ GGGTGGG
     assert_equal [ %w[ Rosalind_0498 Rosalind_2391 ],
                    %w[ Rosalind_0498 Rosalind_0442 ],
                    %w[ Rosalind_2391 Rosalind_2323 ] ],
-                 fasta.adjacency_list
+    fasta.adjacency_list {|a,b| DNA.new(a).suffix(3) == DNA.new(b).prefix(3) }
   end
 
   def test_longest_common_substring

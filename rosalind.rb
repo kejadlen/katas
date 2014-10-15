@@ -72,6 +72,10 @@ module Rosalind
     dna = DNA.new(fasta[0])
     puts dna.to_proteins.join("\n")
   end
+
+  problem :prtm do |input|
+    puts Protein.new(input).monoisotopic_mass
+  end
 end
 
 if __FILE__ == $0
@@ -85,6 +89,5 @@ if __FILE__ == $0
   problem = file[/rosalind_(\w+).txt/, 1]
   input = File.read(file)
 
-  # Rosalind.const_get(problem.upcase).new(input).run
   Rosalind::PROBLEMS[problem.downcase][input]
 end

@@ -93,4 +93,9 @@ CLTIDFDSLDDQQDPSFTIRERNSMAQKRIKLSELPLYLNQKAHEDFQRQCQK
     protein = Protein.new('MA')
     assert_equal 12, protein.rna_count
   end
+
+  def test_monoisotopic_mass
+    protein = Protein.new('SKADYEK')
+    assert_in_delta 821.392, protein.monoisotopic_mass, 0.001
+  end
 end

@@ -88,10 +88,22 @@ module Rosalind
       puts Protein.new(input).rna_count
     end
   end
+
+  class ORF < Base
+    def run
+      fasta = FASTA.new(input)
+      dna = DNA.new(fasta[0])
+      puts dna.to_proteins.join("\n")
+    end
+  end
 end
 
 if __FILE__ == $0
-  require 'pry' and binding.pry and exit if ARGV.empty?
+  if ARGV.empty?
+    require 'pry'
+    binding.pry
+    exit
+  end
 
   file = ARGV.shift
   problem = file[/rosalind_(\w+).txt/, 1]

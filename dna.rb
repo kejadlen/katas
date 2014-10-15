@@ -15,7 +15,7 @@ class DNA < DelegateClass(String)
   end
 
   def to_rna
-    tr(?T, ?U)
+    RNA.new(tr(?T, ?U))
   end
 
   def reverse_complement
@@ -38,9 +38,34 @@ class DNA < DelegateClass(String)
   def prefix(n=3)
     self[0..(n-1)]
   end
+
+  def reading_frames
+    [self, reverse_complement].flat_map do |dna|
+      (0..2).flat_map do |i|
+        self.class.new(dna[i..-1])
+      end
+    end
+  end
+
+  def open_reading_frames
+    reading_frames.flat_map do |frame|
+      rna = frame.to_rna
+
+      starts = rna.start_codon_indices
+      stops = rna.stop_codon_indices
+
+      starts.map {|start| [ start, stops.find {|stop| stop > start } ] }
+            .reject {|_,stop| stop.nil? }
+            .map {|start,stop| RNA.new(rna[(start*3)..((stop*3)+2)]) }
+    end
+  end
+
+  def to_proteins
+    open_reading_frames.map(&:to_protein).uniq
+  end
 end
 
-class RNA
+class RNA < DelegateClass(String)
   CODONS = Hash[*<<-EOF.split(/\s+/)]
 UUU F      CUU L      AUU I      GUU V
 UUC F      CUC L      AUC I      GUC V
@@ -60,19 +85,33 @@ UGA Stop   CGA R      AGA R      GGA G
 UGG W      CGG R      AGG R      GGG G
   EOF
 
-  attr_reader :raw
+  START_CODON = 'AUG'
+  STOP_CODONS = %w[ UAA UAG UGA ]
 
-  def initialize(raw)
-    @raw = raw.gsub(/[^acgu]/i, '')
+  attr_reader :codons
+
+  def initialize(input)
+    super(input.gsub(/[^acgu]/i, ''))
+
+    @codons = chars.each_slice(3).map(&:join)
   end
 
-  def to_protein_string
-    Protein.new(
-      raw.chars.each_slice(3)
-        .map {|slice| CODONS[slice.join] }
-        .take_while {|protein| protein != 'Stop' }
-        .join
-    )
+  def to_protein
+    raise unless codons[0] == START_CODON && STOP_CODONS.include?(codons[-1])
+
+    Protein.new(codons.map {|codon| CODONS[codon] }[0..-2].join)
+  end
+
+  def start_codon_indices
+    codons.each.with_object([]).with_index do |(codon,out),i|
+      out << i if codon == START_CODON
+    end
+  end
+
+  def stop_codon_indices
+    codons.each.with_object([]).with_index do |(codon,out),i|
+      out << i if STOP_CODONS.include?(codon)
+    end
   end
 end
 
@@ -104,5 +143,9 @@ class Protein < DelegateClass(String)
       out %= 1_000_000
     end
     out
+  end
+
+  def eql?(other)
+    self == other
   end
 end

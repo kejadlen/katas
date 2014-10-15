@@ -1,3 +1,4 @@
+require 'letters'
 require 'minitest/autorun'
 
 require_relative 'rosalind'
@@ -38,12 +39,37 @@ class TestDNA < Minitest::Test
     assert_equal 'AAA', DNA.new('AAATAAA').prefix
     assert_equal 'AAA', DNA.new('AAATTTT').prefix
   end
+
+  def test_open_reading_frames
+    dna = DNA.new(<<-EOF)
+AGCCATGTAGCTAACTCAGGTTACATGGGGATGACCCCGCGACTTGGATTAGAGTCTCTTTTGGAATAAGCCTGAATGAT
+CCGAGTAGCATCTCAG
+    EOF
+
+    assert_equal %w[ MLLGSFRLIPKETLIQVAGSSPCNLS
+                     M
+                     MGMTPRLGLESLLE
+                     MTPRLGLESLLE ].sort,
+                 dna.to_proteins.sort
+  end
 end
 
 class TestRNA < Minitest::Test
-  def test_to_protein_string
+  def test_to_protein
     rna = RNA.new('AUGGCCAUGGCGCCCAGAACUGAGAUCAAUAGUACCCGUAUUAACGGGUGA')
-    assert_equal 'MAMAPRTEINSTRING', rna.to_protein_string
+    assert_equal 'MAMAPRTEINSTRING', rna.to_protein
+  end
+
+  def test_start_codon_indices
+    rna = RNA.new('AUGGCCAUGGCGCCCAGAACUGAGAUCAAUAGUACCCGUAUUAACGGGUGA')
+
+    assert_equal [ 0, 2 ], rna.start_codon_indices
+  end
+
+  def test_stop_codon_indices
+    rna = RNA.new('AUGGCCAUGGCGCCCAGAACUGAGAUCAAUAGUACCCGUAUUAACGGGUGA')
+
+    assert_equal [ 16 ], rna.stop_codon_indices
   end
 end
 

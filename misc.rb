@@ -20,19 +20,19 @@ module Rosalind
                end
   end
 
-  def lexical_sort(alphabet, a, b)
+  def self.lexical_sort(alphabet, a, b)
     a = a.map {|c| alphabet.index(c) }
     b = b.map {|c| alphabet.index(c) }
     a <=> b
   end
 
-  def permutations(alphabet, n)
+  def self.permutations(alphabet, n)
     return alphabet if n == 1
 
     alphabet.flat_map {|char| permutations(alphabet, n-1).map {|p| "#{char}#{p}" }}
   end
 
-  def lexv(alphabet, n)
+  def self.lexv(alphabet, n)
     (1..n).flat_map {|i| permutations(alphabet, i)}.sort {|a, b| lexical_sort(alphabet, a.chars, b.chars) }
   end
 end

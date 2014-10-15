@@ -3,6 +3,8 @@ require 'minitest/autorun'
 require_relative 'misc'
 
 class TestMisc < Minitest::Test
+  include Rosalind
+
   def test_rabbits
     assert_equal 1, Rabbits[[1, 3]]
     assert_equal 1, Rabbits[[2, 3]]
@@ -20,13 +22,13 @@ class TestMisc < Minitest::Test
   end
 
   def test_permutations
-    assert_equal <<-EOF.split(/\s+/), permutations(%w[T A G C], 2)
+    assert_equal <<-EOF.split(/\s+/), Rosalind.permutations(%w[T A G C], 2)
 TT TA TG TC AT AA AG AC GT GA GG GC CT CA CG CC
     EOF
   end
 
   def test_lexv
-    assert_equal <<-EOF.split(/\s+/), lexv(%w[D N A], 3)
+    assert_equal <<-EOF.split(/\s+/), Rosalind.lexv(%w[D N A], 3)
 D DD DDD DDN DDA DN DND DNN DNA DA DAD DAN DAA
 N ND NDD NDN NDA NN NND NNN NNA NA NAD NAN NAA
 A AD ADD ADN ADA AN AND ANN ANA AA AAD AAN AAA

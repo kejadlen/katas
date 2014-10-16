@@ -1,3 +1,6 @@
+require 'letters'
+require 'pry'
+
 require_relative 'dna'
 require_relative 'fasta'
 require_relative 'misc'

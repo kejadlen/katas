@@ -52,6 +52,18 @@ CCGAGTAGCATCTCAG
                      MTPRLGLESLLE ].sort,
                  dna.to_proteins.sort
   end
+
+  def test_reverse_palindrome
+    dna = DNA.new('GCATGC')
+    assert dna.reverse_palindrome?
+  end
+
+  def test_reverse_palindromes
+    dna = DNA.new('TCAATGCATGCGGGTCTATATGCAT')
+    assert_equal [ [4, 6], [5, 4], [6, 6], [7, 4],
+                   [17, 4], [18, 4], [20, 6], [21, 4] ],
+                 dna.reverse_palindromes(4..12).map {|i,j| [ i+1, j] }.sort
+  end
 end
 
 class TestRNA < Minitest::Test

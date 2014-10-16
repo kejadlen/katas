@@ -65,6 +65,20 @@ class DNA < DelegateClass(String)
   def to_proteins
     open_reading_frames.map(&:to_protein).uniq
   end
+
+  def reverse_palindrome?
+    self == reverse_complement
+  end
+
+  def reverse_palindromes(range)
+    range.flat_map do |length|
+      chars.each_cons(length)
+           .with_index
+           .map {|dna,i| [ DNA.new(dna.join), i ] }
+           .select {|dna,_| dna.reverse_palindrome? }
+           .map {|_,i| [ i, length ] }
+    end
+  end
 end
 
 class RNA < DelegateClass(String)
@@ -100,7 +114,7 @@ UGG W      CGG R      AGG R      GGG G
   end
 
   def to_protein
-    raise unless codons[0] == START_CODON && STOP_CODONS.include?(codons[-1])
+    # raise unless codons[0] == START_CODON && STOP_CODONS.include?(codons[-1])
 
     Protein.new(codons.map {|codon| CODONS[codon] }[0..-2].join)
   end

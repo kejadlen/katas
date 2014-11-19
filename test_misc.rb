@@ -34,4 +34,8 @@ N ND NDD NDN NDA NN NND NNN NNA NA NAD NAN NAA
 A AD ADD ADN ADA AN AND ANN ANA AA AAD AAN AAA
     EOF
   end
+
+  def test_iprb
+    assert_in_delta 0.783333, Rosalind.iprb(2, 2, 2), 0.001
+  end
 end

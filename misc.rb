@@ -35,4 +35,14 @@ module Rosalind
   def self.lexv(alphabet, n)
     (1..n).flat_map {|i| permutations(alphabet, i)}.sort {|a, b| lexical_sort(alphabet, a.chars, b.chars) }
   end
+
+  def self.iprb(k, m, n)
+    total = (k + m + n).to_f
+    mm = (m/total) * ((m-1)/(total-1))
+    mn = (m/total) * (n/(total-1))
+    nm = (n/total) * (m/(total-1))
+    nn = (n/total) * ((n-1)/(total-1))
+    recessive = mm*0.25 + mn*0.5 + nm*0.5 + nn
+    1 - recessive
+  end
 end

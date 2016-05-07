@@ -7,18 +7,26 @@ impl Anagram {
     fn new(s: &str) -> Anagram {
         Anagram { word: s.into() }
     }
-
-    fn sorted_chars(s: &str) -> Vec<char> {
-        let mut sorted_chars: Vec<_> = s.to_lowercase().chars().collect();
-        sorted_chars.sort();
-        sorted_chars
-    }
 }
 
 impl PartialEq for Anagram {
     fn eq(&self, other: &Anagram) -> bool {
-        self.word.to_lowercase() != other.word.to_lowercase() &&
-        Self::sorted_chars(&self.word) == Self::sorted_chars(&other.word)
+        let lhs = self.word.to_lowercase();
+        let rhs = other.word.to_lowercase();
+
+        lhs != rhs && lhs.sorted_chars() == rhs.sorted_chars()
+    }
+}
+
+trait SortedChars {
+    fn sorted_chars(&self) -> Vec<char>;
+}
+
+impl SortedChars for String {
+    fn sorted_chars(&self) -> Vec<char> {
+        let mut sorted_chars: Vec<_> = self.chars().collect();
+        sorted_chars.sort();
+        sorted_chars
     }
 }
 

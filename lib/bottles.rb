@@ -1,4 +1,8 @@
 class Bottles
+  def verses(start, stop)
+    start.downto(stop).map {|n| verse(n) }.join("\n")
+  end
+
   def verse(n)
     <<-VERSE
 #{bottle_plural(n).capitalize} of beer on the wall, #{bottle_plural(n)} of beer.

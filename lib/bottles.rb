@@ -8,28 +8,62 @@ class Bottles
   end
 
   def verse(n)
-    <<-VERSE
-#{bottle_plural(n).capitalize} of beer on the wall, #{bottle_plural(n)} of beer.
-#{command(n)}, #{bottle_plural(next_quantity(n))} of beer on the wall.
-    VERSE
+    Verse.new(n).to_s
   end
 
-  def command(n)
-    case n
-    when 1
-      'Take it down and pass it around'
-    when 0
-      'Go to the store and buy some more'
-    else
-      'Take one down and pass it around'
+  class Verse
+    DEFAULT_BEHAVIOR = {
+      quantity: ->(n) { n },
+      command: 'Take one down and pass it around',
+      next: ->(n) { n - 1 },
+    }
+    BEHAVIORS = Hash.new({})
+    BEHAVIORS[1] = { command: 'Take it down and pass it around' }
+    BEHAVIORS[0] = { command: 'Go to the store and buy some more',
+                     quantity: ->(_) { 'no more' },
+                     next: ->(_) { 99 } }
+
+    attr_reader :n
+
+    def initialize(n)
+      @n = n
     end
-  end
 
-  def next_quantity(n)
-    (n == 0) ? 99 : n - 1
-  end
+    def to_s
+      <<-VERSE
+#{refrain.capitalize}, #{descriptor}.
+#{command}, #{succ.refrain}.
+      VERSE
+    end
 
-  def bottle_plural(n)
-    "#{(n == 0) ? 'no more': n} bottle#{?s unless n == 1}"
+    def refrain
+      "#{descriptor} on the wall"
+    end
+
+    def descriptor
+      "#{quantity} bottle#{?s if plural?} of beer"
+    end
+
+    private
+
+    def command
+      behaviors[:command]
+    end
+
+    def quantity
+      behaviors[:quantity].call(n)
+    end
+
+    def behaviors
+      DEFAULT_BEHAVIOR.merge(BEHAVIORS[n])
+    end
+
+    def plural?
+      n != 1
+    end
+
+    def succ
+      self.class.new(behaviors[:next].call(n))
+    end
   end
 end

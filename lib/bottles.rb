@@ -13,15 +13,15 @@ class Bottles
 
   class Verse
     DEFAULT_BEHAVIOR = {
-      quantity: ->(n) { n },
       command: 'Take one down and pass it around',
-      next: ->(n) { n - 1 },
+      quantity: ->(n) { n },
+      diff: -1,
     }
     BEHAVIORS = Hash.new({})
     BEHAVIORS[1] = { command: 'Take it down and pass it around' }
     BEHAVIORS[0] = { command: 'Go to the store and buy some more',
                      quantity: ->(_) { 'no more' },
-                     next: ->(_) { 99 } }
+                     diff: 99 }
 
     attr_reader :n
 
@@ -63,7 +63,7 @@ class Bottles
     end
 
     def succ
-      self.class.new(behaviors[:next].call(n))
+      self.class.new(n + behaviors[:diff])
     end
   end
 end

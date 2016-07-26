@@ -11,59 +11,89 @@ class Bottles
     Verse.new(n).to_s
   end
 
-  class Verse
-    DEFAULT_BEHAVIOR = {
-      command: 'Take one down and pass it around',
-      quantity: ->(n) { n },
-      diff: -1,
-    }
-    BEHAVIORS = Hash.new({})
-    BEHAVIORS[1] = { command: 'Take it down and pass it around' }
-    BEHAVIORS[0] = { command: 'Go to the store and buy some more',
-                     quantity: ->(_) { 'no more' },
-                     diff: 99 }
-
-    attr_reader :n
-
+  class Verse < SimpleDelegator
     def initialize(n)
-      @n = n
+      case n
+      when 0
+        super(Zero.new(n))
+      when 1
+        super(One.new(n))
+      when 6
+        super(Six.new(n))
+      else
+        super(Base.new(n))
+      end
     end
 
-    def to_s
-      <<-VERSE
+    class Base
+      attr_reader :n
+
+      def initialize(n)
+        @n = n
+      end
+
+      def to_s
+        <<-VERSE
 #{refrain.capitalize}, #{descriptor}.
 #{command}, #{succ.refrain}.
-      VERSE
+        VERSE
+      end
+
+      def refrain
+        "#{descriptor} on the wall"
+      end
+
+      def descriptor
+        "#{uber_quantity} of beer"
+      end
+
+      def uber_quantity
+        "#{quantity} bottle#{?s if plural?}"
+      end
+
+      private
+
+      def command
+        'Take one down and pass it around'
+      end
+
+      def quantity
+        n
+      end
+
+      def plural?
+        n != 1
+      end
+
+      def succ
+        Verse.new(n - 1)
+      end
     end
 
-    def refrain
-      "#{descriptor} on the wall"
+    class Six < Base
+      def uber_quantity
+        '1 six-pack'
+      end
     end
 
-    def descriptor
-      "#{quantity} bottle#{?s if plural?} of beer"
+    class One < Base
+      def command
+        'Take it down and pass it around'
+      end
     end
 
-    private
+    class Zero < Base
+      def command
+        'Go to the store and buy some more'
+      end
 
-    def command
-      behaviors[:command]
-    end
+      def quantity
+        'no more'
+      end
 
-    def quantity
-      behaviors[:quantity].call(n)
-    end
-
-    def behaviors
-      DEFAULT_BEHAVIOR.merge(BEHAVIORS[n])
-    end
-
-    def plural?
-      n != 1
-    end
-
-    def succ
-      self.class.new(n + behaviors[:diff])
+      def succ
+        Verse.new(99)
+      end
     end
   end
 end

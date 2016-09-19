@@ -10,6 +10,9 @@ impl From<usize> for Roman {
 
 impl ToString for Roman {
   fn to_string(&self) -> String {
-    std::iter::repeat('I').take(self.n).collect::<String>()
+    std::iter::repeat('I')
+      .take(self.n)
+      .collect::<String>()
+      .replace("IIII", "IV")
   }
 }

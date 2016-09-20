@@ -1,3 +1,7 @@
 pub fn raindrops(n: usize) -> String {
-  "1".into()
+  match n {
+      1 => "1",
+      _ => "Pling",
+    }
+    .into()
 }

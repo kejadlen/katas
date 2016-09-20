@@ -5,7 +5,7 @@ pub struct Roman {
 }
 
 impl Roman {
-  fn mapping() -> Vec<(usize, char)> {
+  fn original_mapping() -> Vec<(usize, char)> {
     vec![
       (1_000, 'M'),
       (500, 'D'),
@@ -15,6 +15,20 @@ impl Roman {
       (5, 'V'),
       (1, 'I'),
     ]
+  }
+
+  fn subtractive_replacements() -> Vec<(String, String)> {
+    vec![
+      ("DCCCC", "CM"),
+      ("CCCC", "CD"),
+      ("LXXXX", "XC"),
+      ("XXXX", "XL"),
+      ("VIIII", "IX"),
+      ("IIII", "IV"),
+    ]
+      .iter()
+      .map(|&(x, y)| (x.into(), y.into()))
+      .collect()
   }
 }
 
@@ -27,19 +41,17 @@ impl From<usize> for Roman {
 impl ToString for Roman {
   fn to_string(&self) -> String {
     let mut current = self.n.clone();
-    Self::mapping()
+    let mut original = Self::original_mapping()
       .iter()
       .map(|&(i, c)| {
         let n = current / i;
         current -= n * i;
         iter::repeat(c).take(n).collect::<String>()
       })
-      .collect::<String>()
-      .replace("DCCCC", "CM")
-      .replace("CCCC", "CD")
-      .replace("LXXXX", "XC")
-      .replace("XXXX", "XL")
-      .replace("VIIII", "IX")
-      .replace("IIII", "IV")
+      .collect::<String>();
+    for (x, y) in Self::subtractive_replacements() {
+      original = original.replace(&x, &y);
+    }
+    original
   }
 }

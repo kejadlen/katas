@@ -11,7 +11,6 @@ fn test_3() {
 }
 
 #[test]
-#[ignore]
 fn test_5() {
   assert_eq!("Plang", raindrops::raindrops(5));
 }

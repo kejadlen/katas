@@ -33,13 +33,11 @@ fn test_six() {
 }
 
 #[test]
-#[ignore]
 fn test_nine() {
   assert_eq!("IX", Roman::from(9).to_string());
 }
 
 #[test]
-#[ignore]
 fn test_twenty_seven() {
   assert_eq!("XXVII", Roman::from(27).to_string());
 }

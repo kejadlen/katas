@@ -43,13 +43,11 @@ fn test_twenty_seven() {
 }
 
 #[test]
-#[ignore]
 fn test_forty_eight() {
   assert_eq!("XLVIII", Roman::from(48).to_string());
 }
 
 #[test]
-#[ignore]
 fn test_fifty_nine() {
   assert_eq!("LIX", Roman::from(59).to_string());
 }

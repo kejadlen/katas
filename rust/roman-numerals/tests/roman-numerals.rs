@@ -68,13 +68,11 @@ fn test_163() {
 }
 
 #[test]
-#[ignore]
 fn test_402() {
   assert_eq!("CDII", Roman::from(402).to_string());
 }
 
 #[test]
-#[ignore]
 fn test_575() {
   assert_eq!("DLXXV", Roman::from(575).to_string());
 }

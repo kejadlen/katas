@@ -1,7 +1,13 @@
 pub fn raindrops(n: usize) -> String {
-  match n {
-      1 => "1",
-      _ => "Pling",
-    }
-    .into()
+  let mut result = String::new();
+
+  if n % 3 == 0 {
+    result.push_str("Pling");
+  }
+
+  if result.is_empty() {
+    result = n.to_string()
+  }
+
+  result
 }

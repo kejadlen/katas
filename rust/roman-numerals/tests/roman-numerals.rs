@@ -84,13 +84,11 @@ fn test_911() {
 }
 
 #[test]
-#[ignore]
 fn test_1024() {
   assert_eq!("MXXIV", Roman::from(1024).to_string());
 }
 
 #[test]
-#[ignore]
 fn test_3000() {
   assert_eq!("MMM", Roman::from(3000).to_string());
 }

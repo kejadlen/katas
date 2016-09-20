@@ -1,5 +1,16 @@
+use std::iter;
+
 pub struct Roman {
   n: usize,
+}
+
+impl Roman {
+  fn mapping() -> Vec<(usize, char)> {
+    vec![
+      (5, 'V'),
+      (1, 'I'),
+    ]
+  }
 }
 
 impl From<usize> for Roman {
@@ -10,8 +21,14 @@ impl From<usize> for Roman {
 
 impl ToString for Roman {
   fn to_string(&self) -> String {
-    std::iter::repeat('I')
-      .take(self.n)
+    let mut current = self.n.clone();
+    Self::mapping()
+      .iter()
+      .map(|&(i, c)| {
+        let n = current / i;
+        current -= n * i;
+        iter::repeat(c).take(n).collect::<String>()
+      })
       .collect::<String>()
       .replace("IIII", "IV")
   }

@@ -53,19 +53,16 @@ fn test_fifty_nine() {
 }
 
 #[test]
-#[ignore]
 fn test_ninety_three() {
   assert_eq!("XCIII", Roman::from(93).to_string());
 }
 
 #[test]
-#[ignore]
 fn test_141() {
   assert_eq!("CXLI", Roman::from(141).to_string());
 }
 
 #[test]
-#[ignore]
 fn test_163() {
   assert_eq!("CLXIII", Roman::from(163).to_string());
 }

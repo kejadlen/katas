@@ -7,6 +7,7 @@ pub struct Roman {
 impl Roman {
   fn mapping() -> Vec<(usize, char)> {
     vec![
+      (100, 'C'),
       (50, 'L'),
       (10, 'X'),
       (5, 'V'),
@@ -32,6 +33,7 @@ impl ToString for Roman {
         iter::repeat(c).take(n).collect::<String>()
       })
       .collect::<String>()
+      .replace("LXXXX", "XC")
       .replace("XXXX", "XL")
       .replace("VIIII", "IX")
       .replace("IIII", "IV")

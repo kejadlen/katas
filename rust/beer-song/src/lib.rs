@@ -3,45 +3,40 @@
 use std::fmt;
 
 pub fn sing(start: usize, end: usize) -> String {
-  Verse::new(start + 1)
-    .iter()
+  Verses { count: start + 1 }
     .take_while(|v| (end..start + 1).contains(v.count))
     .map(|v| v.to_string())
     .collect::<Vec<_>>()
     .join("\n")
 }
 
-pub fn verse(bottles: usize) -> String {
-  Verse::new(bottles).to_string()
+pub fn verse(count: usize) -> String {
+  Verse { count: count }.to_string()
 }
 
 struct Verse {
   count: usize,
-  noun_phrase: String,
-  instruction: String,
 }
 
 impl Verse {
-  fn new(count: usize) -> Self {
-    let mut noun_phrase = if count == 0 {
+  fn noun_phrase(&self) -> String {
+    let mut noun_phrase = if self.count == 0 {
       "no more".into()
     } else {
-      count.to_string()
+      self.count.to_string()
     };
     noun_phrase.push(' ');
-    noun_phrase.push_str(if count == 1 { "bottle" } else { "bottles" });
+    noun_phrase.push_str(if self.count == 1 { "bottle" } else { "bottles" });
+    noun_phrase
+  }
 
-    let instruction = match count {
-      0 => "Go to the store and buy some more",
-      1 => "Take it down and pass it around",
-      _ => "Take one down and pass it around",
-    };
-
-    Verse {
-      count: count,
-      noun_phrase: noun_phrase.into(),
-      instruction: instruction.into(),
-    }
+  fn instruction(&self) -> String {
+    match self.count {
+        0 => "Go to the store and buy some more",
+        1 => "Take it down and pass it around",
+        _ => "Take one down and pass it around",
+      }
+      .into()
   }
 
   fn iter(&self) -> Verses {
@@ -58,7 +53,7 @@ impl Iterator for Verses {
 
   fn next(&mut self) -> Option<Verse> {
     self.count = if self.count > 0 { self.count - 1 } else { 99 };
-    Some(Verse::new(self.count))
+    Some(Verse { count: self.count })
   }
 }
 
@@ -68,10 +63,10 @@ impl fmt::Display for Verse {
     write!(f,
            "{capitalized_noun_phrase} of beer on the wall, {noun_phrase} of \
             beer.\n{instruction}, {next_noun_phrase} of beer on the wall.\n",
-           capitalized_noun_phrase = capitalize(&self.noun_phrase),
-           noun_phrase = self.noun_phrase,
-           instruction = self.instruction,
-           next_noun_phrase = next.noun_phrase)
+           capitalized_noun_phrase = capitalize(&self.noun_phrase()),
+           noun_phrase = self.noun_phrase(),
+           instruction = self.instruction(),
+           next_noun_phrase = next.noun_phrase())
   }
 }
 

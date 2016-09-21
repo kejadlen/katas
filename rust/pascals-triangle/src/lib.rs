@@ -8,10 +8,26 @@ impl PascalsTriangle {
   }
 
   pub fn rows(&self) -> Vec<Vec<u32>> {
-    match self.row {
-      0 => Vec::new(),
-      1 => vec![vec![1]],
-      _ => Vec::new(),
+    if self.row == 0 {
+      return Vec::new();
     }
+
+    let last_rows = PascalsTriangle { row: self.row - 1 }.rows();
+    let last_row = last_rows.last();
+    let next_row = last_row.map(|row| {
+        Some(0)
+          .iter()
+          .chain(row.iter())
+          .chain(Some(0).iter())
+          .collect::<Vec<_>>()
+          .windows(2)
+          .map(|pair| pair.iter().map(|&x| x).sum())
+          .collect()
+      })
+      .unwrap_or(vec![1]);
+
+    let mut rows = last_rows.clone();
+    rows.push(next_row);
+    rows
   }
 }

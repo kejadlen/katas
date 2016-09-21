@@ -23,7 +23,6 @@ fn test_verse_2() {
 }
 
 #[test]
-#[ignore]
 fn test_verse_8() {
   assert_eq!(beer::verse(8),
              "8 bottles of beer on the wall, 8 bottles of beer.\nTake one \

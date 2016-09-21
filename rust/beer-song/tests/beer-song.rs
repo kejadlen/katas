@@ -30,7 +30,6 @@ fn test_verse_8() {
 }
 
 #[test]
-#[ignore]
 fn test_song_8_6() {
   assert_eq!(beer::sing(8, 6),
              "8 bottles of beer on the wall, 8 bottles of beer.\nTake one \
@@ -42,7 +41,6 @@ fn test_song_8_6() {
 }
 
 #[test]
-#[ignore]
 fn test_song_3_0() {
   assert_eq!(beer::sing(3, 0),
              "3 bottles of beer on the wall, 3 bottles of beer.\nTake one \

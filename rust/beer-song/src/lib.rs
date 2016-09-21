@@ -1,7 +1,11 @@
 use std::fmt;
 
 pub fn sing(start: usize, end: usize) -> String {
-  "".into()
+  (end..start + 1)
+    .rev()
+    .map(|count| Verse::new(count).to_string())
+    .collect::<Vec<_>>()
+    .join("\n")
 }
 
 pub fn verse(bottles: usize) -> String {

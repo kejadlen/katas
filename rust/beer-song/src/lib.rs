@@ -14,6 +14,19 @@ pub fn verse(count: usize) -> String {
   Verse { count: count }.to_string()
 }
 
+struct Verses {
+  count: usize,
+}
+
+impl Iterator for Verses {
+  type Item = Verse;
+
+  fn next(&mut self) -> Option<Verse> {
+    self.count = if self.count > 0 { self.count - 1 } else { 99 };
+    Some(Verse { count: self.count })
+  }
+}
+
 struct Verse {
   count: usize,
 }
@@ -41,19 +54,6 @@ impl Verse {
 
   fn iter(&self) -> Verses {
     Verses { count: self.count }
-  }
-}
-
-struct Verses {
-  count: usize,
-}
-
-impl Iterator for Verses {
-  type Item = Verse;
-
-  fn next(&mut self) -> Option<Verse> {
-    self.count = if self.count > 0 { self.count - 1 } else { 99 };
-    Some(Verse { count: self.count })
   }
 }
 

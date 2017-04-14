@@ -9,13 +9,18 @@ use std::mem;
 fn main() {
     println!("Hello, world!");
     setup_terminal(|| {
-        let stdin = io::stdin();
-        let input = stdin.chars().flat_map(|x| x).take_while(|c| *c != 'q');
-        for c in input {
+        let mut stdin = io::stdin();
+        let mut buf: [u8; 1] = [0];
+        while true {
+            stdin.read_exact(&mut buf);
+            let c = buf[0] as char;
             if c.is_control() {
                 println!("{}\r", c as u8);
             } else {
                 println!("{} {}\r", c as u8, c);
+            }
+            if c == 'q' {
+                return;
             }
         }
     });
@@ -34,6 +39,9 @@ fn setup_terminal<F>(f: F)
         raw.c_oflag &= !libc::OPOST;
         raw.c_cflag |= libc::CS8;
         raw.c_lflag &= !(libc::ECHO | libc::ICANON | libc::IEXTEN | libc::ISIG);
+        raw.c_cc[libc::VMIN] = 0;
+        raw.c_cc[libc::VTIME] = 1;
+
         libc::tcsetattr(libc::STDIN_FILENO, libc::TCSAFLUSH, &raw);
     }
 

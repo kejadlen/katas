@@ -10,9 +10,13 @@ fn main() {
     println!("Hello, world!");
     setup_terminal(|| {
                        let stdin = io::stdin();
-                       let chars = stdin.chars().flat_map(|x| x).take_while(|c| *c != 'q');
-                       for c in chars {
-                           println!("{}", c);
+                       let input = stdin.chars().flat_map(|x| x).take_while(|c| *c != 'q');
+                       for c in input {
+                           if c.is_control() {
+                               println!("{}", c as u8);
+                           } else {
+                               println!("{} {}", c as u8, c);
+                           }
                        }
                    });
 }

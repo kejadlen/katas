@@ -26,7 +26,7 @@ fn setup_terminal<F>(f: F)
         libc::tcgetattr(libc::STDIN_FILENO, &mut original_termios);
 
         let mut raw = original_termios.clone();
-        raw.c_lflag &= !libc::ECHO;
+        raw.c_lflag &= !(libc::ECHO | libc::ICANON);
         libc::tcsetattr(libc::STDIN_FILENO, libc::TCSAFLUSH, &raw);
     }
 

@@ -9,16 +9,16 @@ use std::mem;
 fn main() {
     println!("Hello, world!");
     setup_terminal(|| {
-                       let stdin = io::stdin();
-                       let input = stdin.chars().flat_map(|x| x).take_while(|c| *c != 'q');
-                       for c in input {
-                           if c.is_control() {
-                               println!("{}", c as u8);
-                           } else {
-                               println!("{} {}", c as u8, c);
-                           }
-                       }
-                   });
+        let stdin = io::stdin();
+        let input = stdin.chars().flat_map(|x| x).take_while(|c| *c != 'q');
+        for c in input {
+            if c.is_control() {
+                println!("{}\r", c as u8);
+            } else {
+                println!("{} {}\r", c as u8, c);
+            }
+        }
+    });
 }
 
 fn setup_terminal<F>(f: F)
@@ -30,7 +30,10 @@ fn setup_terminal<F>(f: F)
         libc::tcgetattr(libc::STDIN_FILENO, &mut original_termios);
 
         let mut raw = original_termios.clone();
-        raw.c_lflag &= !(libc::ECHO | libc::ICANON | libc::ISIG);
+        raw.c_iflag &= !(libc::BRKINT | libc::ICRNL | libc::INPCK | libc::ISTRIP | libc::IXON);
+        raw.c_oflag &= !libc::OPOST;
+        raw.c_cflag |= libc::CS8;
+        raw.c_lflag &= !(libc::ECHO | libc::ICANON | libc::IEXTEN | libc::ISIG);
         libc::tcsetattr(libc::STDIN_FILENO, libc::TCSAFLUSH, &raw);
     }
 

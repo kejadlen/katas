@@ -1,5 +1,3 @@
-#![feature(io)]
-
 extern crate libc;
 
 use std::io;
@@ -11,7 +9,7 @@ fn main() {
     setup_terminal(|| {
         let mut stdin = io::stdin();
         let mut buf: [u8; 1] = [0];
-        while true {
+        loop {
             stdin.read_exact(&mut buf);
             let c = buf[0] as char;
             if c.is_control() {
@@ -34,7 +32,7 @@ fn setup_terminal<F>(f: F)
         original_termios = mem::zeroed();
         libc::tcgetattr(libc::STDIN_FILENO, &mut original_termios);
 
-        let mut raw = original_termios.clone();
+        let mut raw = original_termios;
         raw.c_iflag &= !(libc::BRKINT | libc::ICRNL | libc::INPCK | libc::ISTRIP | libc::IXON);
         raw.c_oflag &= !libc::OPOST;
         raw.c_cflag |= libc::CS8;

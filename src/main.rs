@@ -5,7 +5,11 @@ extern crate error_chain;
 extern crate libc;
 
 mod errors {
-    error_chain!{}
+    error_chain! {
+        foreign_links {
+            Io(::std::io::Error);
+        }
+    }
 }
 
 use std::io;
@@ -14,29 +18,7 @@ use std::mem;
 
 use errors::*;
 
-fn main() {
-    if let Err(ref e) = run() {
-        use std::io::Write;
-        let stderr = &mut ::std::io::stderr();
-        let errmsg = "Error writing to stderr";
-
-        writeln!(stderr, "error: {}", e).expect(errmsg);
-
-        for e in e.iter().skip(1) {
-            writeln!(stderr, "caused by: {}", e).expect(errmsg);
-        }
-
-        // The backtrace is not always generated. Try to run this example
-        // with `RUST_BACKTRACE=1`.
-        if let Some(backtrace) = e.backtrace() {
-            writeln!(stderr, "backtrace: {:?}", backtrace).expect(errmsg);
-        }
-
-        ::std::process::exit(1);
-    }
-}
-
-fn run() -> Result<()> {
+quick_main!(|| -> Result<()> {
     println!("Hello, world!");
     let keystrokes = Keystrokes::new()?;
     for c in keystrokes.take_while(|c| *c != 'q') {
@@ -48,7 +30,7 @@ fn run() -> Result<()> {
     }
 
     Ok(())
-}
+});
 
 struct Keystrokes {
     stdin: io::Stdin,
@@ -61,7 +43,7 @@ impl Keystrokes {
         unsafe {
             termios = mem::zeroed();
             if libc::tcgetattr(libc::STDIN_FILENO, &mut termios) == -1 {
-                return Err("tcgetattr".into());
+                bail!(Error::with_chain(io::Error::last_os_error(), "tcgetattr"));
             }
 
             let mut raw = termios;
@@ -73,7 +55,7 @@ impl Keystrokes {
             raw.c_cc[libc::VTIME] = 1;
 
             if libc::tcsetattr(libc::STDIN_FILENO, libc::TCSAFLUSH, &raw) == -1 {
-                return Err("tcsetattr".into());
+                bail!(Error::with_chain(io::Error::last_os_error(), "tcsetattr"));
             }
         }
 

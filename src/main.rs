@@ -1,12 +1,44 @@
+#![recursion_limit = "1024"]
+
+#[macro_use]
+extern crate error_chain;
 extern crate libc;
+
+mod errors {
+    error_chain!{}
+}
 
 use std::io;
 use std::io::prelude::*;
 use std::mem;
 
+use errors::*;
+
 fn main() {
+    if let Err(ref e) = run() {
+        use std::io::Write;
+        let stderr = &mut ::std::io::stderr();
+        let errmsg = "Error writing to stderr";
+
+        writeln!(stderr, "error: {}", e).expect(errmsg);
+
+        for e in e.iter().skip(1) {
+            writeln!(stderr, "caused by: {}", e).expect(errmsg);
+        }
+
+        // The backtrace is not always generated. Try to run this example
+        // with `RUST_BACKTRACE=1`.
+        if let Some(backtrace) = e.backtrace() {
+            writeln!(stderr, "backtrace: {:?}", backtrace).expect(errmsg);
+        }
+
+        ::std::process::exit(1);
+    }
+}
+
+fn run() -> Result<()> {
     println!("Hello, world!");
-    let keystrokes = Keystrokes::new();
+    let keystrokes = Keystrokes::new()?;
     for c in keystrokes.take_while(|c| *c != 'q') {
         if c.is_control() {
             println!("{}\r", c as u8);
@@ -14,6 +46,8 @@ fn main() {
             println!("{} {}\r", c as u8, c);
         }
     }
+
+    Ok(())
 }
 
 struct Keystrokes {
@@ -22,11 +56,13 @@ struct Keystrokes {
 }
 
 impl Keystrokes {
-    fn new() -> Self {
+    fn new() -> Result<Self> {
         let mut termios;
         unsafe {
             termios = mem::zeroed();
-            libc::tcgetattr(libc::STDIN_FILENO, &mut termios);
+            if libc::tcgetattr(libc::STDIN_FILENO, &mut termios) == -1 {
+                return Err("tcgetattr".into());
+            }
 
             let mut raw = termios;
             raw.c_iflag &= !(libc::BRKINT | libc::ICRNL | libc::INPCK | libc::ISTRIP | libc::IXON);
@@ -36,11 +72,13 @@ impl Keystrokes {
             raw.c_cc[libc::VMIN] = 0;
             raw.c_cc[libc::VTIME] = 1;
 
-            libc::tcsetattr(libc::STDIN_FILENO, libc::TCSAFLUSH, &raw);
+            if libc::tcsetattr(libc::STDIN_FILENO, libc::TCSAFLUSH, &raw) == -1 {
+                return Err("tcsetattr".into());
+            }
         }
 
         let stdin = io::stdin();
-        Self { stdin, termios }
+        Ok(Self { stdin, termios })
     }
 }
 
@@ -58,8 +96,10 @@ impl Iterator for Keystrokes {
     fn next(&mut self) -> Option<char> {
         let mut buf: [u8; 1] = [0];
         loop {
-            if self.stdin.read_exact(&mut buf).is_ok() {
-                return Some(buf[0] as char);
+            match self.stdin.read_exact(&mut buf) {
+                Ok(_) => return Some(buf[0] as char),
+                Err(ref e) if e.kind() != io::ErrorKind::UnexpectedEof => return None,
+                _ => {}
             }
         }
     }

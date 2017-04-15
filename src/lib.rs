@@ -18,12 +18,12 @@ use std::mem;
 
 use errors::*;
 
-pub struct Keystrokes {
+pub struct KeyPresses {
     stdin: io::Stdin,
     termios: libc::termios,
 }
 
-impl Keystrokes {
+impl KeyPresses {
     pub fn new() -> Result<Self> {
         let mut termios;
         unsafe {
@@ -50,7 +50,7 @@ impl Keystrokes {
     }
 }
 
-impl Drop for Keystrokes {
+impl Drop for KeyPresses {
     fn drop(&mut self) {
         unsafe {
             libc::tcsetattr(libc::STDIN_FILENO, libc::TCSAFLUSH, &self.termios);
@@ -58,7 +58,7 @@ impl Drop for Keystrokes {
     }
 }
 
-impl Iterator for Keystrokes {
+impl Iterator for KeyPresses {
     type Item = char;
 
     fn next(&mut self) -> Option<char> {

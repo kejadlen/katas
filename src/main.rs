@@ -8,12 +8,17 @@ use kilo::errors::*;
 
 quick_main!(|| -> Result<()> {
     println!("Hello, world!");
-    let keystrokes = Keystrokes::new()?;
-    for c in keystrokes.take_while(|c| *c != ctrl_key('q')) {
-        if c.is_control() {
-            println!("{}\r", c as u8);
-        } else {
-            println!("{} {}\r", c as u8, c);
+    let key_presses = KeyPresses::new()?;
+    for c in key_presses {
+        match c {
+            c if c == ctrl_key('q') => { return Ok(()) },
+            c => {
+                if c.is_control() {
+                    println!("{}\r", c as u8);
+                } else {
+                    println!("{} {}\r", c as u8, c);
+                }
+            }
         }
     }
 

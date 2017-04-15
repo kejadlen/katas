@@ -32,4 +32,5 @@ fn ctrl_key(c: char) -> char {
 
 fn refresh_screen() {
     println!("\x1b[2J");
+    println!("\x1b[H");
 }

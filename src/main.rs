@@ -9,7 +9,7 @@ use kilo::errors::*;
 quick_main!(|| -> Result<()> {
     println!("Hello, world!");
     let keystrokes = Keystrokes::new()?;
-    for c in keystrokes.take_while(|c| *c != 'q') {
+    for c in keystrokes.take_while(|c| *c != ctrl_key('q')) {
         if c.is_control() {
             println!("{}\r", c as u8);
         } else {
@@ -19,3 +19,7 @@ quick_main!(|| -> Result<()> {
 
     Ok(())
 });
+
+fn ctrl_key(c: char) -> char {
+    ((c as u8) & 0x1f) as char
+}

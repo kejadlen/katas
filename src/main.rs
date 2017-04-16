@@ -3,8 +3,6 @@ extern crate kilo;
 #[macro_use]
 extern crate error_chain;
 
-use std::io::{self, Write};
-
 use kilo::*;
 use kilo::errors::*;
 
@@ -15,7 +13,7 @@ quick_main!(|| -> Result<()> {
             refresh_screen();
             match c {
                 c if c == ctrl_key('q') => return Ok(()),
-                c => { println!("{} {}", c as usize, c); }
+                _ => {}
             }
         }
 
@@ -44,6 +42,9 @@ fn refresh_screen() {
 }
 
 fn draw_rows() {
+    for _ in 0..24 {
+        println!("~\r");
+    }
 }
 
 fn ctrl_key(c: char) -> char {

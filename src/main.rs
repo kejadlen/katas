@@ -3,17 +3,19 @@ extern crate kilo;
 #[macro_use]
 extern crate error_chain;
 
+use std::io::{self, Write};
+
 use kilo::*;
 use kilo::errors::*;
 
 quick_main!(|| -> Result<()> {
-    run(|| {
+    cleanup_after(|| {
         let key_presses = KeyPresses::new()?;
         for c in key_presses {
             refresh_screen();
             match c {
                 c if c == ctrl_key('q') => return Ok(()),
-                c => {}
+                c => { println!("{} {}", c as usize, c); }
             }
         }
 
@@ -21,10 +23,9 @@ quick_main!(|| -> Result<()> {
     })
 });
 
-fn run<F>(f: F) -> Result<()>
+fn cleanup_after<F>(f: F) -> Result<()>
     where F: Fn() -> Result<()>
 {
-    clear_screen();
     let result = f();
     clear_screen();
     result
@@ -32,12 +33,17 @@ fn run<F>(f: F) -> Result<()>
 
 
 fn clear_screen() {
-    println!("\x1b[2J");
-    println!("\x1b[H");
+    print!("\x1b[2J");
+    print!("\x1b[H");
 }
 
 fn refresh_screen() {
     clear_screen();
+    draw_rows();
+    print!("\x1b[H");
+}
+
+fn draw_rows() {
 }
 
 fn ctrl_key(c: char) -> char {

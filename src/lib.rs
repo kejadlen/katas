@@ -67,7 +67,7 @@ impl Iterator for KeyPresses {
             match self.stdin.read_exact(&mut buf) {
                 Ok(_) => return Some(buf[0] as char),
                 Err(ref e) if e.kind() != io::ErrorKind::UnexpectedEof => return None,
-                _ => {}
+                _ => return Some(0 as char),
             }
         }
     }

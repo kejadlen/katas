@@ -4,25 +4,27 @@ use std::io;
 use std::io::prelude::*;
 use std::mem;
 
+use libc::*;
+
 use errors::*;
 
 pub fn key_presses() -> Result<KeyPresses> {
     let mut termios;
     unsafe {
         termios = mem::zeroed();
-        if libc::tcgetattr(libc::STDIN_FILENO, &mut termios) == -1 {
+        if tcgetattr(STDIN_FILENO, &mut termios) == -1 {
             bail!(Error::with_chain(io::Error::last_os_error(), "tcgetattr"));
         }
 
         let mut raw = termios;
-        raw.c_iflag &= !(libc::BRKINT | libc::ICRNL | libc::INPCK | libc::ISTRIP | libc::IXON);
-        raw.c_oflag &= !libc::OPOST;
-        raw.c_cflag |= libc::CS8;
-        raw.c_lflag &= !(libc::ECHO | libc::ICANON | libc::IEXTEN | libc::ISIG);
-        raw.c_cc[libc::VMIN] = 0;
-        raw.c_cc[libc::VTIME] = 1;
+        raw.c_iflag &= !(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
+        raw.c_oflag &= !OPOST;
+        raw.c_cflag |= CS8;
+        raw.c_lflag &= !(ECHO | ICANON | IEXTEN | ISIG);
+        raw.c_cc[VMIN] = 0;
+        raw.c_cc[VTIME] = 1;
 
-        if libc::tcsetattr(libc::STDIN_FILENO, libc::TCSAFLUSH, &raw) == -1 {
+        if tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw) == -1 {
             bail!(Error::with_chain(io::Error::last_os_error(), "tcsetattr"));
         }
     }
@@ -31,15 +33,32 @@ pub fn key_presses() -> Result<KeyPresses> {
     Ok(KeyPresses { stdin, termios })
 }
 
+pub fn window_size() -> Result<(usize, usize)> {
+    let mut ws: winsize;
+    unsafe {
+        ws = mem::zeroed();
+
+        if ioctl(STDOUT_FILENO, TIOCGWINSZ, &mut ws) == -1 {
+            bail!(Error::with_chain(io::Error::last_os_error(), "window_size"));
+        }
+
+        if ws.ws_col == 0 {
+            bail!("window_size");
+        }
+    }
+
+    Ok((ws.ws_col as usize, ws.ws_row as usize))
+}
+
 pub struct KeyPresses {
     stdin: io::Stdin,
-    termios: libc::termios,
+    termios: termios,
 }
 
 impl Drop for KeyPresses {
     fn drop(&mut self) {
         unsafe {
-            libc::tcsetattr(libc::STDIN_FILENO, libc::TCSAFLUSH, &self.termios);
+            tcsetattr(STDIN_FILENO, TCSAFLUSH, &self.termios);
         }
     }
 }

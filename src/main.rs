@@ -2,13 +2,14 @@ extern crate kilo;
 
 #[macro_use]
 extern crate error_chain;
+extern crate libc;
 
 use kilo::*;
 use kilo::errors::*;
 
 quick_main!(|| -> Result<()> {
     cleanup_after(|| {
-        let key_presses = KeyPresses::new()?;
+        let key_presses = terminal::key_presses()?;
         for c in key_presses {
             refresh_screen();
             match c {

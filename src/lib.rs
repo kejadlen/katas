@@ -4,18 +4,11 @@
 extern crate error_chain;
 extern crate libc;
 
-pub mod errors {
-    error_chain! {
-        foreign_links {
-            Io(::std::io::Error);
-        }
-    }
-}
-
 use std::io;
 use std::io::prelude::*;
 use std::mem;
 
+pub mod errors;
 use errors::*;
 
 pub struct KeyPresses {

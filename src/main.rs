@@ -8,7 +8,7 @@ use kilo::*;
 use kilo::errors::*;
 
 quick_main!(|| -> Result<()> {
-    let display = terminal::Display::new();
+    let display = terminal::Display::new()?;
     let key_presses = terminal::key_presses()?;
     for c in key_presses {
         display.refresh();

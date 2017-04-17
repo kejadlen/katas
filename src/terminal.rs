@@ -48,10 +48,12 @@ impl Cursor {
 
 pub struct Display {
     cursor: Cursor,
+    rows: usize,
+    cols: usize,
 }
 
 impl Display {
-    pub fn window_size() -> Result<(usize, usize)> {
+    fn window_size() -> Result<(usize, usize)> {
         let mut ws: winsize;
         unsafe {
             ws = mem::zeroed();
@@ -68,8 +70,10 @@ impl Display {
         Ok((ws.ws_col as usize, ws.ws_row as usize))
     }
 
-    pub fn new() -> Self {
-        Display { cursor: Cursor {} }
+    pub fn new() -> Result<Self> {
+        let cursor = Cursor {};
+        let (rows, cols) = Self::window_size()?;
+        Ok(Display { cursor, rows, cols })
     }
 
     pub fn refresh(&self) {
@@ -83,7 +87,7 @@ impl Display {
     }
 
     fn draw_rows(&self) {
-        for _ in 0..24 {
+        for _ in 0..self.rows {
             print!("~\r\n");
         }
     }

@@ -33,21 +33,66 @@ pub fn key_presses() -> Result<KeyPresses> {
     Ok(KeyPresses { stdin, termios })
 }
 
-pub fn window_size() -> Result<(usize, usize)> {
-    let mut ws: winsize;
-    unsafe {
-        ws = mem::zeroed();
+pub struct Position {
+    row: usize,
+    col: usize,
+}
 
-        if ioctl(STDOUT_FILENO, TIOCGWINSZ, &mut ws) == -1 {
-            bail!(Error::with_chain(io::Error::last_os_error(), "window_size"));
+pub struct Cursor {}
+
+impl Cursor {
+    fn set_position(&self, pos: Position) {
+        print!("\x1b[{};{}H", pos.row, pos.col);
+    }
+}
+
+pub struct Display {
+    cursor: Cursor,
+}
+
+impl Display {
+    pub fn window_size() -> Result<(usize, usize)> {
+        let mut ws: winsize;
+        unsafe {
+            ws = mem::zeroed();
+
+            if ioctl(STDOUT_FILENO, TIOCGWINSZ, &mut ws) == -1 {
+                bail!(Error::with_chain(io::Error::last_os_error(), "window_size"));
+            }
+
+            if ws.ws_col == 0 {
+                bail!("window_size");
+            }
         }
 
-        if ws.ws_col == 0 {
-            bail!("window_size");
-        }
+        Ok((ws.ws_col as usize, ws.ws_row as usize))
     }
 
-    Ok((ws.ws_col as usize, ws.ws_row as usize))
+    pub fn new() -> Self {
+        Display { cursor: Cursor {} }
+    }
+
+    pub fn refresh(&self) {
+        self.clear();
+        self.draw_rows();
+    }
+
+    fn clear(&self) {
+        print!("\x1b[2J");
+        self.cursor.set_position(Position { row: 1, col: 1 });
+    }
+
+    fn draw_rows(&self) {
+        for _ in 0..24 {
+            print!("~\r\n");
+        }
+    }
+}
+
+impl Drop for Display {
+    fn drop(&mut self) {
+        self.clear();
+    }
 }
 
 pub struct KeyPresses {

@@ -36,4 +36,7 @@ test_from_list = do
   assertEqual True (contains 1 fromList)
   assertEqual True (contains 2 fromList)
 
+test_gadt = do
+  assertEqual 1 (length (add "omg" empty))
+
 main = htfMain htf_thisModulesTests

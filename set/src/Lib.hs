@@ -6,6 +6,7 @@ module Lib
     , length
     , contains
     , remove
+    , setFromList
     ) where
 
 import Prelude hiding (length)
@@ -40,3 +41,7 @@ remove _ Empty = Empty
 remove e (Cons x xs)
   | e == x    = xs
   | otherwise = Cons x (remove e xs)
+
+setFromList :: [Int] -> Set
+setFromList [] = Empty
+setFromList (x:xs) = add x (setFromList xs)

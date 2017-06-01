@@ -4,10 +4,11 @@ import Prelude hiding (length)
 import Test.Framework
 import Lib
 
-zero    = empty
-one     = add 1 empty
-many    = add 1 (add 2 (add 3 empty))
-removed = remove 2 many
+zero     = empty
+one      = add 1 empty
+many     = add 1 (add 2 (add 3 empty))
+removed  = remove 2 many
+fromList = setFromList [1, 2, 1]
 
 test_isEmpty = do
   assertEqual True (isEmpty zero)
@@ -29,5 +30,10 @@ test_uniqueness = do
 test_remove = do
   assertEqual 2 (length removed)
   assertEqual False (contains 2 removed)
+
+test_from_list = do
+  assertEqual 2 (length fromList)
+  assertEqual True (contains 1 fromList)
+  assertEqual True (contains 2 fromList)
 
 main = htfMain htf_thisModulesTests

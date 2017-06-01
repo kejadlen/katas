@@ -3,15 +3,21 @@ module Lib
     , empty
     , isEmpty
     , add
+    , length
     ) where
 
-data Set = Set Bool
+import Prelude hiding (length)
+
+data Set = Set Int
 
 empty :: Set
-empty = Set True
+empty = Set 0
 
 isEmpty :: Set -> Bool
-isEmpty (Set s) = s
+isEmpty (Set n) = n == 0
 
 add :: Int -> Set -> Set
-add _ _ = Set False
+add _ (Set n) = Set (n + 1)
+
+length :: Set -> Int
+length (Set n) = n

@@ -5,6 +5,7 @@ module Lib
     , add
     , length
     , contains
+    , remove
     ) where
 
 import Prelude hiding (length)
@@ -30,6 +31,12 @@ length (Cons _ s) = 1 + (length s)
 
 contains :: Int -> Set -> Bool
 contains _ Empty = False
-contains e (Cons x s)
+contains e (Cons x xs)
   | e == x    = True
-  | otherwise = contains e s
+  | otherwise = contains e xs
+
+remove :: Int -> Set -> Set
+remove _ Empty = Empty
+remove e (Cons x xs)
+  | e == x    = xs
+  | otherwise = Cons x (remove e xs)

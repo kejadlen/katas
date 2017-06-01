@@ -1,8 +1,13 @@
 module Lib
-    ( myReverse
+    ( Set
+    , empty
+    , isEmpty
     ) where
 
-myReverse :: [a] -> [a]
-myReverse []     = []
-myReverse [x]    = [x]
-myReverse (x:xs) = myReverse xs
+data Set = Set
+
+empty :: Set
+empty = Set
+
+isEmpty :: Set -> Bool
+isEmpty _ = True

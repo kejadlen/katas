@@ -14,17 +14,17 @@ module Lib
 import Prelude hiding (length)
 
 data Set a where
-  Empty :: Set a
+  Empty :: (Eq a) => Set a
   Cons :: (Eq a) => a -> Set a -> Set a
 
-empty :: Set a
+empty :: (Eq a) => Set a
 empty = Empty
 
 isEmpty :: Set a -> Bool
 isEmpty Empty = True
 isEmpty _ = False
 
-add :: (Eq a) => a -> Set a -> Set a
+add :: a -> Set a -> Set a
 add x Empty = Cons x Empty
 add e (Cons x xs)
   | e == x    = Cons x xs

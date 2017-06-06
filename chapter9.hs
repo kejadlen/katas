@@ -70,3 +70,61 @@ capitalize (c:cs) = toUpper c : cs
 capitalize' "woot" = "WOOT"
 capitalize' (c:cs) = toUpper c : cs
 capitalizeFirst = toUpper . head
+
+myOr :: [Bool] -> Bool
+myOr []       = False
+myOr (True:_) = True
+myOr (_:bs)   = myOr bs
+
+myAny :: (a -> Bool) -> [a] -> Bool
+myAny _ []    = False
+myAny f (x:xs)
+  | f x       = True
+  | otherwise = myAny f xs
+
+-- myElem :: Eq a => a -> [a] -> Bool
+-- myElem _ []     = False
+-- myElem y (x:xs)
+--   | y == x      = True
+--   | otherwise   = myElem y xs
+
+myElem :: (Eq a) => a -> [a] -> Bool
+myElem x = any (\y -> x == y)
+
+myReverse :: [a] -> [a]
+myReverse [] = []
+myReverse (x:xs) = myReverse xs ++ [x]
+
+squish :: [[a]] -> [a]
+squish []     = []
+squish (x:xs) = x ++ (squish xs)
+
+squishMap :: (a -> [b]) -> [a] -> [b]
+-- squishMap f x = squish $ map f x
+squishMap _ []     = []
+squishMap f (x:xs) = (f x) ++ (squishMap f xs)
+
+squishAgain :: [[a]] -> [a]
+squishAgain = squishMap id
+
+myMaximumBy :: (a -> a -> Ordering) -> [a] -> a
+myMaximumBy f (x:xs) = myMaximumBy' x f xs
+
+myMaximumBy' m f [] = m
+myMaximumBy' m f (x:xs)
+  | f x m == GT = myMaximumBy' x f xs
+  | otherwise   = myMaximumBy' m f xs
+
+myMinimumBy :: (a -> a -> Ordering) -> [a] -> a
+myMinimumBy f (x:xs) = myMinimumBy' x f xs
+
+myMinimumBy' m f [] = m
+myMinimumBy' m f (x:xs)
+  | f x m == LT = myMinimumBy' x f xs
+  | otherwise   = myMinimumBy' m f xs
+
+myMaximum :: (Ord a) => [a] -> a
+myMaximum = myMaximumBy compare
+
+myMinimum :: (Ord a) => [a] -> a
+myMinimum = myMinimumBy (\x -> \y -> compare x y)

@@ -60,7 +60,7 @@ myZip :: [a] -> [b] -> [(a,b)]
 -- myZip _ [] = []
 -- myZip [] _ = []
 -- myZip (a:as) (b:bs) = (a,b) : myZip as bs
-myZip = myZipWith (\a -> \b -> (a,b))
+myZip = myZipWith (\a b -> (a,b))
 
 myZipWith :: (a -> b -> c) -> [a] -> [b] -> [c]
 myZipWith f a b = map (\(x,y) -> f x y) $ zip a b
@@ -127,4 +127,4 @@ myMaximum :: (Ord a) => [a] -> a
 myMaximum = myMaximumBy compare
 
 myMinimum :: (Ord a) => [a] -> a
-myMinimum = myMinimumBy (\x -> \y -> compare x y)
+myMinimum = myMinimumBy (\x y -> compare x y)

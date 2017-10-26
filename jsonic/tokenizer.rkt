@@ -1,5 +1,8 @@
 #lang br/quicklang
-(require brag/support)
+(require brag/support racket/contract)
+
+(define (jsonic-token? x)
+  (or (eof-object? x) (string? x) (token-struct? x)))
 
 (define (make-tokenizer port)
   (define (next-token)
@@ -12,4 +15,6 @@
         [any-char (token 'CHAR-TOK lexeme)]))
     (jsonic-lexer port))
   next-token)
-(provide make-tokenizer)
+(provide
+  (contract-out
+    [make-tokenizer (input-port? . -> . (-> jsonic-token?))]))

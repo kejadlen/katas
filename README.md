@@ -11,10 +11,10 @@ $ raco pkg install --auto beautiful-racket
 
 ## Vim Plugins
 
-[vim-racket](https://github.com/wlangstroth/vim-racket)
-[vim-sexp](https://github.com/guns/vim-sexp)
-[rainbow_parentheses.vim](https://github.com/kien/rainbow_parentheses.vim)
-[scribble.vim](https://github.com/vim-scripts/scribble.vim)
+- [vim-racket](https://github.com/wlangstroth/vim-racket)
+- [vim-sexp](https://github.com/guns/vim-sexp)
+- [rainbow_parentheses.vim](https://github.com/kien/rainbow_parentheses.vim)
+- [scribble.vim](https://github.com/vim-scripts/scribble.vim)
 
 In `.vim/after/ftplugin/racket.vim`:
 

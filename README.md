@@ -31,7 +31,7 @@ au BufRead,BufNewFile *.scrbl set filetype=scribble
 In `.vim/after/ftplugin/scribble.vim`:
 
 ```vim
-set makeprg=scribble\ %
+set makeprg=scribble\ --dest\ scribble\ %
 ```
 
 ## Staying Updated

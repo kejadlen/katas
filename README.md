@@ -54,9 +54,3 @@ $ racket
 Welcome to Racket v6.10.
 > ,enter tokenizer.rkt
 ```
-
-## Scribble
-
-```sh
-raco scribble
-```

@@ -13,13 +13,14 @@ $ raco pkg install --auto beautiful-racket
 
 - [vim-racket](https://github.com/wlangstroth/vim-racket)
 - [vim-sexp](https://github.com/guns/vim-sexp)
-- [rainbow_parentheses.vim](https://github.com/kien/rainbow_parentheses.vim)
+- [~~rainbow_parentheses.vim~~](https://github.com/kien/rainbow_parentheses.vim)
+- [rainbow](https://github.com/luochen1990/rainbow)
 - [scribble.vim](https://github.com/vim-scripts/scribble.vim)
 
-In `.vim/after/ftplugin/racket.vim`:
+In .vim/after/ftplugin/racket.vim:
 
 ```vim
-au VimEnter * RainbowParenthesesToggle
+au VimEnter * RainbowToggleOn
 ```
 
 In `.vim/ftdetect/scribble.vim`:

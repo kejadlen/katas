@@ -2,7 +2,7 @@
 (require "parser.rkt" "tokenizer.rkt")
 
 (module+ reader
-  (provide read-syntax))
+  (provide read-syntax get-info))
 
 (define (read-syntax path port)
   (define parse-tree (parse path (make-tokenizer port path)))

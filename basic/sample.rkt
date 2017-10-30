@@ -7,5 +7,3 @@
 70 goto 11. + 18.5 + .5 rem ignored
 10 print "o" ; "n" ; "e"
 20 print : goto 60.0 : end
-
-; vim: ft=basic

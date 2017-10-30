@@ -20,7 +20,8 @@ $ raco pkg install --auto beautiful-racket
 In .vim/after/ftplugin/racket.vim:
 
 ```vim
-au VimEnter * RainbowToggleOn
+au BufEnter * RainbowToggleOn
+setlocal lispwords+=define-macro,with-handlers,with-pattern
 ```
 
 In `.vim/ftdetect/scribble.vim`:

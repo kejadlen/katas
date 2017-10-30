@@ -36,6 +36,11 @@ In `.vim/after/ftplugin/scribble.vim`:
 set makeprg=scribble\ --dest\ scribble\ %
 ```
 
+### Annoyances
+
+- Escaped parentheses break (`|(|` and `|)|`) break syntax
+  highlighting/indentation.
+
 ## Staying Updated
 
 ```sh

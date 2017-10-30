@@ -6,4 +6,4 @@
   (with-pattern ([LINE-NUM (prefix-id "line-" #'NUM
                                       #:source #'NUM)])
     (syntax/loc caller-stx
-      (define (LINE-NUM) (void) STATEMENT ...))))
+                (define (LINE-NUM) (void) STATEMENT ...))))

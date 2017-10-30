@@ -4,8 +4,8 @@
 (define (read-syntax path port)
   (define tokens (apply-tokenizer make-tokenizer port))
   (strip-bindings
-   #`(module basic-tokens-mod basic/tokenize-only
-       #,@tokens)))
+    #`(module basic-tokens-mod basic/tokenize-only
+        #,@tokens)))
 (module+ reader (provide read-syntax))
 
 (define-macro (tokenize-only-mb TOKEN ...)
